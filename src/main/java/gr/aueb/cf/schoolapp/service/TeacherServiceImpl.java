@@ -47,7 +47,7 @@ public class TeacherServiceImpl implements ITeacherService {
 
 
             // Insert is NOT idempotent, (is not unchangeable)
-            if (teacherDAO.getByVat(insertDTO.getVat()).isPresent()) {
+            if (teacherDAO.findByField("vat", insertDTO.getVat()).isPresent()) {
                 throw new EntityAlreadyExistsException("Teacher", "Teacher with vat: " + insertDTO.getVat() + " already exists");
             }
 
@@ -77,7 +77,7 @@ public class TeacherServiceImpl implements ITeacherService {
 //            if (teacherDAO.getByVat(updateDTO.getVat()).isEmpty()) {
 //                throw new EntityNotFoundException("Teacher", "Teacher with vat: " + updateDTO.getVat() + " not found");
 //            }
-            teacherDAO.getByVat(updateDTO.getVat()).orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with vat: "
+            teacherDAO.findByField("vat", updateDTO.getVat()).orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with vat: "
                         + updateDTO.getVat() + " not found"));
 
             teacherDAO.getById(updateDTO.getId()).orElseThrow(() -> new EntityNotFoundException("Teacher", "Teacher with vat: "
