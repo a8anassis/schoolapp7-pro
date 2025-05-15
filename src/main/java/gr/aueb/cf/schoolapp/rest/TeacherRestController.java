@@ -113,6 +113,9 @@ public class TeacherRestController {
     }
 
 
+    @GET
+    @Path("/paginated")
+    @Produces(MediaType.APPLICATION_JSON)
     public PaginatedResult<TeacherReadOnlyDTO> getFilteredPaginated(
             @QueryParam("firstname") @DefaultValue("") String firstname,
             @QueryParam("lastname") @DefaultValue("") String lastname,
