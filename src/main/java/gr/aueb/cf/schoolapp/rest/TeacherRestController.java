@@ -120,21 +120,21 @@ public class TeacherRestController {
             @QueryParam("firstname") @DefaultValue("") String firstname,
             @QueryParam("lastname") @DefaultValue("") String lastname,
             @QueryParam("vat") @DefaultValue("") String vat,
-            @QueryParam("page") @DefaultValue("") Integer page,
-            @QueryParam("size") @DefaultValue("") Integer size
+            @QueryParam("page") @DefaultValue("0") Integer page,
+            @QueryParam("size") @DefaultValue("10") Integer size
     )
             throws EntityInvalidArgumentException {
-        TeacherFiltersDTO filtersDTO = new TeacherFiltersDTO(firstname, lastname, vat);
-        Map<String , Object> criteria;
-
-        criteria = Mapper.mapToCriteria(filtersDTO);
 
         if (page < 0) throw new EntityInvalidArgumentException("PageInvalidNumber", "Invalid page number");
         if (size <= 0) throw new EntityInvalidArgumentException("SizeInvalidNumber", "Invalid size number");
 
+        TeacherFiltersDTO filtersDTO = new TeacherFiltersDTO(firstname, lastname, vat);
+        Map<String , Object> criteria = Mapper.mapToCriteria(filtersDTO);
         List<TeacherReadOnlyDTO> readOnlyDTOS = teacherService.getTeachersByCriteriaPaginated(criteria, page, size);
+
         long totalItems = teacherService.getTeachersCountByCriteria(criteria);
         int totalPages = (int) Math.ceil((double) totalItems / size);
+
         return new PaginatedResult<>(
                 readOnlyDTOS,
                 page,
