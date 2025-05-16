@@ -48,14 +48,14 @@ public class JwtAuthenticationFilter implements ContainerRequestFilter {
             return;
         }
 //        try {
-            String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-                LOGGER.warn("Missing or invalid Authorization header");
-                throw new NotAuthorizedException("User", "Authorization header must be provided");
+        String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            LOGGER.warn("Missing or invalid Authorization header");
+            throw new NotAuthorizedException("User", "Authorization header must be provided");
 //                throw new EntityNotAuthorizedException("User", "Authorization header must be provided");
-            }
+        }
 
-            String token = authorizationHeader.substring("Bearer ".length()).trim();
+        String token = authorizationHeader.substring("Bearer ".length()).trim();
 
         try {
             String username = jwtService.extractSubject(token);
@@ -64,8 +64,8 @@ public class JwtAuthenticationFilter implements ContainerRequestFilter {
                 if (user != null && jwtService.isTokenValid(token, user)) {
                     requestContext.setSecurityContext(new CustomSecurityContext(user));
                 } else {
-                    System.out.println("Token is not valid" + requestContext.getUriInfo());
-                    //
+                    //System.out.println("Token is not valid" + requestContext.getUriInfo());
+                    throw new NotAuthorizedException("User", "User or Token not valid");
                 }
             }
 //            String username = jwtService.extractSubject(token);
@@ -89,7 +89,7 @@ public class JwtAuthenticationFilter implements ContainerRequestFilter {
 //                requestContext.setSecurityContext(new CustomSecurityContext(user));
 //            }
         } catch (Exception e) {
-            LOGGER.warn("JWT validation failed", e);
+            LOGGER.error("JWT validation failed", e);
         }
     }
 
